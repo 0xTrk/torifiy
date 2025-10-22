@@ -1,0 +1,24 @@
+#!/bin/bash
+
+echo "[!] IMPORTANT: Make sure you have added the following line to /etc/proxychains.conf:"
+echo "    socks5  127.0.0.1 9050"
+echo ""
+
+echo "[+] Starting Tor service..."
+sudo systemctl start tor
+
+# Check that Tor is running
+echo "[+] Checking Tor status..."
+if systemctl is-active --quiet tor; then
+    echo "[✓] Tor is active."
+else
+    echo "[✗] Tor failed to start. Check the service."
+    exit 1
+fi
+
+# Brief pause to ensure the proxy is ready
+sleep 2
+
+# Test IP via proxychains
+echo "[+] Testing IP address via Tor (proxychains)..."
+proxychains curl https://icanhazip.com
